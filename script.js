@@ -6,12 +6,50 @@ function preload() {
     song = loadSound("sum-wave.mp3");
 }
 
+// Create the canvas for the visualizer
 function setup() {
     createCanvas(windowWidth, windowHeight);
     angleMode(DEGREES);
     fft = new p5.FFT();
 }
 
+// Create particles that spawn on the visualizer circle and radiate outwards to edge of screen.
+// Get amplitude from fourier transform of sound and add velocity vector to position of each particle
+// when a given amplitude is exceeded.
+class Particle {
+    constructor() {
+        this.position = p5.Vector.random2D().mult(250);
+        this.velocity = createVector(0, 0);
+        this.accel = this.position.copy().mult(random(0.0001, 0.00001));
+
+        this.width = random(3, 5);
+
+        this.color = [random(1, 255), random(1, 255), random(1, 255)]
+    }
+    update(cond) {
+        this.velocity.add(this.accel);
+        this.position.add(this.velocity);
+        if (cond) {
+            this.position.add(this.velocity);
+            this.position.add(this.velocity);
+            this.position.add(this.velocity);
+        }
+    } 
+    edges() {
+        if (this.position.x < -width / 2 || this.position.x > width / 2 || this.position.y < -height / 2 || this.position.y > height / 2) {
+            return true; 
+        } else {
+            return false;
+        }
+    }
+    show() {
+        noStroke()
+        fill(this.color)
+        ellipse(this.position.x, this.position.y, this.width);
+    }
+}
+
+// Draw circular waveform from frequency data of song. Draw particles.
 function draw() {
     background(0);
     stroke(255);
@@ -59,6 +97,7 @@ function draw() {
     }
 }
 
+// Play or pause song when button is clicked. Pause existing waveform display when song is paused
 function playSound() {
     if (song.isPlaying()) {
         song.pause();
@@ -69,35 +108,3 @@ function playSound() {
     }
 }
 
-class Particle {
-    constructor() {
-        this.position = p5.Vector.random2D().mult(250);
-        this.velocity = createVector(0, 0);
-        this.accel = this.position.copy().mult(random(0.0001, 0.00001));
-
-        this.width = random(3, 5);
-
-        this.color = [random(1, 255), random(1, 255), random(1, 255)]
-    }
-    update(cond) {
-        this.velocity.add(this.accel);
-        this.position.add(this.velocity);
-        if (cond) {
-            this.position.add(this.velocity);
-            this.position.add(this.velocity);
-            this.position.add(this.velocity);
-        }
-    } 
-    edges() {
-        if (this.position.x < -width / 2 || this.position.x > width / 2 || this.position.y < -height / 2 || this.position.y > height / 2) {
-            return true; 
-        } else {
-            return false;
-        }
-    }
-    show() {
-        noStroke()
-        fill(this.color)
-        ellipse(this.position.x, this.position.y, this.width);
-    }
-}

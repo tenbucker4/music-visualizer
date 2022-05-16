@@ -32,12 +32,22 @@ main {
 
 .player-tab img {
     height: 3rem;
-    filter: brightness(75%);
 }
 
-.player-tab img:hover {
+.player-tab button {
+    border-radius: 5px;
+    font-size: 1rem;
+    border: none;
+    padding: 0.5em 1em;
+    background: linear-gradient(to right, #e66465, #9198e5);
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
     cursor: pointer;
-    filter: brightness(150%);
-    transform: scale(1.1);
+}
+
+.player-tab button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
     transition: 0.2s ease-in-out;
 }
