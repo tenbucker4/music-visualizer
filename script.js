@@ -15,9 +15,13 @@ function setup() {
 function draw() {
     background(0);
     stroke(255);
+    strokeWeight(2);
     noFill();
 
     translate(width / 2, height / 2);
+
+    fft.analyze();
+    amp = fft.getEnergy(20, 200)
 
     let wave = fft.waveform();
 
@@ -47,7 +51,7 @@ function draw() {
 
     for (let i = particles.length - 1; i >= 0; i--) {
         if (!particles[i].edges()) {
-            particles[i].update();
+            particles[i].update(amp > 200);
             particles[i].show();
         } else {
             particles.splice(i, 1);
@@ -75,9 +79,14 @@ class Particle {
 
         this.color = [random(1, 255), random(1, 255), random(1, 255)]
     }
-    update() {
+    update(cond) {
         this.velocity.add(this.accel);
         this.position.add(this.velocity);
+        if (cond) {
+            this.position.add(this.velocity);
+            this.position.add(this.velocity);
+            this.position.add(this.velocity);
+        }
     } 
     edges() {
         if (this.position.x < -width / 2 || this.position.x > width / 2 || this.position.y < -height / 2 || this.position.y > height / 2) {
