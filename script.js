@@ -8,7 +8,7 @@ function preload() {
 
 // Create the canvas for the visualizer
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(innerWidth, innerHeight);
     angleMode(DEGREES);
     fft = new p5.FFT();
 }
@@ -96,6 +96,12 @@ function draw() {
         }
     }
 }
+
+window.addEventListener('resize', () => {
+    setup();
+})
+
+console.log(innerWidth)
 
 // Play or pause song when button is clicked. Pause existing waveform display when song is paused
 function playSound() {
